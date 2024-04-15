@@ -1,0 +1,8 @@
+# Ignorar todos os arquivos .exe em todas as subpastas
+**/*.exe
+
+# Ignorar todos os arquivos ou pastas chamados "output" em todas as subpastas
+**/output
+
+# Ignorar a pasta .vscode e todo o seu conteúdo
+.vscode/
