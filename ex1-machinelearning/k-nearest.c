@@ -13,9 +13,23 @@ typedef struct AlunoQ {
     double distanceTest;
 } AlunoQ;
 
-void sortByDistances (double distances[], int n) {
+void sortByDistances (AlunoQ alunosQ[], int n) {
     
+    int i, j;
+    AlunoQ key;
 
+    for (i = 1; i < n; i++) {
+
+        key = alunosQ[i];
+        j = i - 1;
+
+        while (j >= 0 && alunosQ[j].distanceTest > key.distanceTest) {
+            alunosQ[j + 1] = alunosQ[j];
+            j = j - 1;
+        }
+
+        alunosQ[j + 1] = key;
+    }
 }
 
 int main () {
@@ -41,30 +55,39 @@ int main () {
         Aluno* alumni_teste = (Aluno*) malloc (sizeof (Aluno));
         scanf ("%lf %lf", &alumni_teste->nota_media, &alumni_teste->horas_estudo);
 
-        double distancesArray[num_amostras_treinamento];
+        AlunoQ alunosQ [num_amostras_treinamento];
 
-        for (int j = 0; j < num_amostras_treinamento; j++) {    
+        for (int j = 0; j < num_amostras_treinamento; j++) {
+
+            alunosQ[j].rotulo = alumnis[j].rotulo;    
             
-            double distance = sqrt (pow ((alumni_teste->nota_media - alumnis[i].nota_media), 2) + 
-                                    pow ((alumni_teste->horas_estudo - alumnis[i].horas_estudo), 2));
+            double distance = sqrt (pow ((alumni_teste->nota_media - alumnis[j].nota_media), 2) + 
+                                    pow ((alumni_teste->horas_estudo - alumnis[j].horas_estudo), 2));
 
-            distancesArray[j] = distance;
+            alunosQ[j].distanceTest = distance;
         }
 
-        sortByDistances (distancesArray, num_amostras_treinamento);
+        sortByDistances (alunosQ, num_amostras_treinamento);
 
         int qntd_aprovados = 0, qntd_reprovados = 0;
 
         for (int j = 0; j < num_vizinhos; j++) {
-
             
-
+            if (alunosQ[j].rotulo == 0)
+                qntd_reprovados++;
+            else
+                qntd_aprovados++;
         }
+
+        if (qntd_aprovados > qntd_reprovados)
+            printf ("Aluno %d: (%.2lf, %.2lf) = Aprovado\n", i, alumni_teste->nota_media, alumni_teste->horas_estudo);
+
+        else
+            printf ("Aluno %d: (%.2lf, %.2lf) = Reprovado\n", i, alumni_teste->nota_media, alumni_teste->horas_estudo);
 
         free (alumni_teste);
         i++;
     }
-    
 
     free (alumnis);
 
