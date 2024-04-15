@@ -13,22 +13,38 @@ typedef struct AlunoQ {
     double distanceTest;
 } AlunoQ;
 
-void sortByDistances (AlunoQ alunosQ[], int n) {
-    
-    int i, j;
-    AlunoQ key;
+void swap (AlunoQ *a, AlunoQ *b) {
+    AlunoQ temp = *a;
+    *a = *b;
+    *b = temp;
+}
 
-    for (i = 1; i < n; i++) {
+int partition (AlunoQ alunosQ[], int low, int high) {
 
-        key = alunosQ[i];
-        j = i - 1;
+    double pivot = alunosQ[high].distanceTest;
+    int i = low - 1;
 
-        while (j >= 0 && alunosQ[j].distanceTest > key.distanceTest) {
-            alunosQ[j + 1] = alunosQ[j];
-            j = j - 1;
+    for (int j = low; j <= high - 1; j++) {
+
+        if (alunosQ[j].distanceTest < pivot) {
+            i++;
+            swap(&alunosQ[i], &alunosQ[j]);
         }
+    }
 
-        alunosQ[j + 1] = key;
+    swap(&alunosQ[i + 1], &alunosQ[high]);
+
+    return (i + 1);
+}
+
+void quicksort(AlunoQ alunosQ[], int low, int high) {
+
+    if (low < high) {
+
+        int pi = partition(alunosQ, low, high);
+
+        quicksort(alunosQ, low, pi - 1);
+        quicksort(alunosQ, pi + 1, high);
     }
 }
 
@@ -55,7 +71,7 @@ int main () {
         Aluno* alumni_teste = (Aluno*) malloc (sizeof (Aluno));
         scanf ("%lf %lf", &alumni_teste->nota_media, &alumni_teste->horas_estudo);
 
-        AlunoQ alunosQ [num_amostras_treinamento];
+        AlunoQ* alunosQ = malloc(sizeof(AlunoQ) * num_amostras_treinamento);
 
         for (int j = 0; j < num_amostras_treinamento; j++) {
 
@@ -67,7 +83,7 @@ int main () {
             alunosQ[j].distanceTest = distance;
         }
 
-        sortByDistances (alunosQ, num_amostras_treinamento);
+        quicksort (alunosQ, 0, num_amostras_treinamento - 1);
 
         int qntd_aprovados = 0, qntd_reprovados = 0;
 
@@ -78,6 +94,8 @@ int main () {
             else
                 qntd_aprovados++;
         }
+
+        free (alunosQ);
 
         if (qntd_aprovados > qntd_reprovados)
             printf ("Aluno %d: (%.2lf, %.2lf) = Aprovado\n", i, alumni_teste->nota_media, alumni_teste->horas_estudo);
