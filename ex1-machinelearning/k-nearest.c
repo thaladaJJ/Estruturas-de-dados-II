@@ -9,7 +9,7 @@ typedef struct Aluno {
 } Aluno;
 
 typedef struct AlunoQ {
-    int rotulo;
+    int index;
     double distanceTest;
 } AlunoQ;
 
@@ -17,35 +17,6 @@ void swap (AlunoQ *a, AlunoQ *b) {
     AlunoQ temp = *a;
     *a = *b;
     *b = temp;
-}
-
-int partition (AlunoQ alunosQ[], int low, int high) {
-
-    double pivot = alunosQ[high].distanceTest;
-    int i = low - 1;
-
-    for (int j = low; j <= high - 1; j++) {
-
-        if (alunosQ[j].distanceTest < pivot) {
-            i++;
-            swap(&alunosQ[i], &alunosQ[j]);
-        }
-    }
-
-    swap(&alunosQ[i + 1], &alunosQ[high]);
-
-    return (i + 1);
-}
-
-void quicksort(AlunoQ alunosQ[], int low, int high) {
-
-    if (low < high) {
-
-        int pi = partition(alunosQ, low, high);
-
-        quicksort(alunosQ, low, pi - 1);
-        quicksort(alunosQ, pi + 1, high);
-    }
 }
 
 int main () {
@@ -65,37 +36,46 @@ int main () {
         scanf ("%lf %lf %d", &alumnis[i].nota_media, &alumnis[i].horas_estudo, &alumnis[i].rotulo);
     }
 
+    AlunoQ* alunosQ = (AlunoQ*) malloc (sizeof (AlunoQ) * num_vizinhos);
+    for (int j = 0; j < num_vizinhos; j++)
+        alunosQ [j].distanceTest = INFINITY;
+
+    Aluno* alumni_teste = (Aluno*) malloc (sizeof (Aluno));
+
     int i = 0;
+
     while (i < num_amostras_teste) {
 
-        Aluno* alumni_teste = (Aluno*) malloc (sizeof (Aluno));
         scanf ("%lf %lf", &alumni_teste->nota_media, &alumni_teste->horas_estudo);
 
-        AlunoQ* alunosQ = malloc(sizeof(AlunoQ) * num_amostras_treinamento);
-
-        for (int j = 0; j < num_amostras_treinamento; j++) {
-
-            alunosQ[j].rotulo = alumnis[j].rotulo;    
+        for (int j = 0; j < num_amostras_treinamento; j++) {    
             
             double distance = sqrt (pow ((alumni_teste->nota_media - alumnis[j].nota_media), 2) + 
                                     pow ((alumni_teste->horas_estudo - alumnis[j].horas_estudo), 2));
+            
+            if (distance < alunosQ [num_vizinhos - 1].distanceTest) {
+                AlunoQ novoAluno = {j, distance};
+                alunosQ[num_vizinhos - 1] = novoAluno;
+                
+                for (int k = num_vizinhos - 1; k > 0 && alunosQ [k].distanceTest < alunosQ [k - 1].distanceTest; k--) {
+                    swap(&alunosQ[k], &alunosQ[k - 1]);
+                }
 
-            alunosQ[j].distanceTest = distance;
+            }
+
         }
-
-        quicksort (alunosQ, 0, num_amostras_treinamento - 1);
 
         int qntd_aprovados = 0, qntd_reprovados = 0;
 
         for (int j = 0; j < num_vizinhos; j++) {
+
+            int index = alunosQ[j].index;
             
-            if (alunosQ[j].rotulo == 0)
+            if (alumnis[index].rotulo == 0)
                 qntd_reprovados++;
             else
                 qntd_aprovados++;
         }
-
-        free (alunosQ);
 
         if (qntd_aprovados > qntd_reprovados)
             printf ("Aluno %d: (%.2lf, %.2lf) = Aprovado\n", i, alumni_teste->nota_media, alumni_teste->horas_estudo);
@@ -103,10 +83,11 @@ int main () {
         else
             printf ("Aluno %d: (%.2lf, %.2lf) = Reprovado\n", i, alumni_teste->nota_media, alumni_teste->horas_estudo);
 
-        free (alumni_teste);
         i++;
     }
 
+    free (alumni_teste);
+    free (alunosQ);
     free (alumnis);
 
     return 0;
