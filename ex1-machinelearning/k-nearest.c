@@ -36,7 +36,7 @@ int main () {
         scanf ("%lf %lf %d", &alumnis[i].nota_media, &alumnis[i].horas_estudo, &alumnis[i].rotulo);
     }
 
-    AlunoQ* alunosQ = (AlunoQ*) malloc ((sizeof (AlunoQ) * num_vizinhos) + 1);
+    AlunoQ* alunosQ = (AlunoQ*) malloc ((sizeof (AlunoQ) * num_vizinhos));
 
     Aluno* alumni_teste = (Aluno*) malloc (sizeof (Aluno));
 
@@ -47,7 +47,7 @@ int main () {
         scanf ("%lf %lf", &alumni_teste->nota_media, &alumni_teste->horas_estudo);
 
         for (int j = 0; j < num_vizinhos; j++)
-        alunosQ [j].distanceTest = INFINITY;
+            alunosQ [j].distanceTest = INFINITY;
 
         for (int j = 0; j < num_amostras_treinamento; j++) {    
             
@@ -55,7 +55,7 @@ int main () {
                                     pow ((alumni_teste->horas_estudo - alumnis[j].horas_estudo), 2));
             
             if (distance < alunosQ [num_vizinhos - 1].distanceTest) {
-                
+
                 AlunoQ novoAluno = {j, distance};
                 alunosQ[num_vizinhos - 1] = novoAluno;
                 
