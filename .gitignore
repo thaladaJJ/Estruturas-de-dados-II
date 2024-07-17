@@ -6,3 +6,5 @@
 
 # Ignorar a pasta .vscode e todo o seu conteúdo
 .vscode/
+
+**/*.png
