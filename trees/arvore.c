@@ -49,22 +49,22 @@ void destroyTree (Node* root) {
 
 }
 
-void inorder_traversal(Node* root) {
-    
-    if (root != NULL) {
-        inorder_traversal(root->left);
-        printf("%d ", root->value);
-        inorder_traversal(root->right);
-    }
-
-}
-
 void preorder_traversal(Node* root) {
     
     if (root != NULL) {
         printf("%d ", root->value);
         preorder_traversal(root->left);
         preorder_traversal(root->right);
+    }
+
+}
+
+void inorder_traversal(Node* root) {
+    
+    if (root != NULL) {
+        inorder_traversal(root->left);
+        printf("%d ", root->value);
+        inorder_traversal(root->right);
     }
 
 }
