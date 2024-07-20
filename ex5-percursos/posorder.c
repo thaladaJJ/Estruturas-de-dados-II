@@ -89,6 +89,5 @@ int main () {
         destroyTree (root);
     }
 
-
     return 0;
 }
