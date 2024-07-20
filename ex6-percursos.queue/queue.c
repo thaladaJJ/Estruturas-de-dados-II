@@ -24,7 +24,7 @@ void push(queue *q, void* data) {
     if (new_node == NULL) 
         return;
 
-    new_node->data = (int*) data;
+    new_node->data = data;
     new_node->next = NULL;
 
     if (empty (q)) {
