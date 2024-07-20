@@ -66,6 +66,23 @@ void in_order( node *p, void (*process)(int dado) ) { // esq - raiz - dir
 	}
 }
 
+node* findNode (node* root, int dado) {
+
+	if (root != NULL) {
+
+		if (root->data > dado)
+			return findNode (root->esq, dado);
+		
+		else if (root->data < dado)
+			return findNode (root->dir, dado);
+		
+		else
+			return root;
+	}
+
+	return NULL;
+}
+
 void in_level( node *p, void (*process)(int dado) ) {
 	queue q;
     // implementar
@@ -73,28 +90,24 @@ void in_level( node *p, void (*process)(int dado) ) {
 
 	push (&q, &p->data);
 
+	node* aux = p;		
+
 	while (!empty (&q)) {
 		
 		int* dado = (int*) front (&q);
 		pop (&q);
 		process (*dado);
 
-		if (p->esq != NULL)
-			push (&q, &p->esq->data);
-		
-		if (p->dir != NULL)
-			push (&q, &p->dir->data);
+		aux = findNode (p, *dado);
 
-		if (!empty (&q)) {
-			
-			int* prox_valor = (int*) front (&q);
-
-			if (p->esq && p->esq->data == *prox_valor)
-				p = p->esq;
-			
-			else if (p->dir && p->dir->data == *prox_valor)
-				p = p->dir;
+		if (aux->esq != NULL) {
+			push (&q, &aux->esq->data);
 		}
+
+		if (aux->dir != NULL) {
+			push (&q, &aux->dir->data);		
+		}
+		
 	}
 
 	destroy (&q);
