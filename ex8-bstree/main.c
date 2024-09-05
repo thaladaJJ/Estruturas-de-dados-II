@@ -76,7 +76,6 @@ bst* min(bst* root) {
     }
 
     return aux;
-    
 }
 
 bst* rem(bst* root, char* str) {
